@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd jal-rakshak/frontend && npm run build",
+  "outputDirectory": "jal-rakshak/frontend/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

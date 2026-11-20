@@ -1,0 +1,16 @@
+services:
+  # FastAPI Production Web Service
+  - type: web
+    name: jal-rakshak-api
+    env: python
+    region: oregon
+    plan: free
+    rootDir: jal-rakshak
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PORT
+        value: 10000

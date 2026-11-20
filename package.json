@@ -1,0 +1,12 @@
+{
+  "name": "jal-rakshak-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JAL-RAKSHAK: Predictive Water Crisis Intelligence & Distribution Network",
+  "scripts": {
+    "install:frontend": "npm --prefix jal-rakshak/frontend install",
+    "build": "npm --prefix jal-rakshak/frontend run build",
+    "preview": "npm --prefix jal-rakshak/frontend run preview",
+    "start": "npm --prefix jal-rakshak/frontend run preview"
+  }
+}
