@@ -78,10 +78,11 @@ export default function SaveScenarioModal({
 
         {/* Title */}
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">
+          <label htmlFor="scenario-title-input" className="block text-xs font-bold text-slate-700 mb-1">
             Scenario Name / Title *
           </label>
           <input
+            id="scenario-title-input"
             type="text"
             required
             value={title}
@@ -93,10 +94,11 @@ export default function SaveScenarioModal({
 
         {/* Unique Key */}
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">
+          <label htmlFor="scenario-key-input" className="block text-xs font-bold text-slate-700 mb-1">
             Unique Scenario Identifier (slug) *
           </label>
           <input
+            id="scenario-key-input"
             type="text"
             required
             value={scenarioKey}
@@ -112,10 +114,11 @@ export default function SaveScenarioModal({
 
         {/* Description */}
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">
+          <label htmlFor="scenario-desc-input" className="block text-xs font-bold text-slate-700 mb-1">
             Description & Operational Assumptions
           </label>
           <textarea
+            id="scenario-desc-input"
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}

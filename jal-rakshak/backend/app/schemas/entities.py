@@ -18,9 +18,9 @@ class UserCreate(UserBase):
     pass
 
 class UserUpdate(BaseModel):
-    full_name: Optional[str] = None
-    role: Optional[str] = None
-    department: Optional[str] = None
+    full_name: Optional[str] = Field(default=None, min_length=1, max_length=120)
+    role: Optional[str] = Field(default=None, pattern="^(admin|engineer|operator|viewer)$")
+    department: Optional[str] = Field(default=None, max_length=120)
     is_active: Optional[bool] = None
 
 class UserOut(UserBase):

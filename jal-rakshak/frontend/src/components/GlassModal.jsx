@@ -45,11 +45,15 @@ export default function GlassModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
+            aria-hidden="true"
             className="fixed inset-0 bg-slate-900/30 backdrop-blur-md"
           />
 
           {/* Modal Card */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="glass-modal-title"
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -68,7 +72,7 @@ export default function GlassModal({
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+                  <h3 id="glass-modal-title" className="text-lg font-bold text-slate-900 tracking-tight">
                     {title}
                   </h3>
                   {subtitle && (

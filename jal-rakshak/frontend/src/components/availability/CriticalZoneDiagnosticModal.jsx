@@ -31,11 +31,17 @@ export default function CriticalZoneDiagnosticModal({ zoneData, onClose }) {
       {/* Backdrop */}
       <div
         onClick={onClose}
+        aria-hidden="true"
         className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-3xl border border-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto z-10">
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="zone-diagnostic-modal-title"
+        className="relative w-full max-w-2xl bg-white/95 backdrop-blur-3xl border border-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto z-10"
+      >
         {/* Top Header */}
         <div className="flex items-start justify-between pb-4 border-b border-sky-100 gap-4">
           <div className="space-y-1">
@@ -48,7 +54,7 @@ export default function CriticalZoneDiagnosticModal({ zoneData, onClose }) {
               </span>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
+            <h2 id="zone-diagnostic-modal-title" className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
               {zoneData.zone_name}
             </h2>
             <p className="text-xs text-slate-500">
@@ -58,6 +64,7 @@ export default function CriticalZoneDiagnosticModal({ zoneData, onClose }) {
 
           <button
             onClick={onClose}
+            aria-label="Close zone diagnostics modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />

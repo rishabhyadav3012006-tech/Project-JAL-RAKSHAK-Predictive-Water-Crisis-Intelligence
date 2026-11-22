@@ -3,14 +3,14 @@ from datetime import datetime, timezone
 from typing import Dict, Any, List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 from app.database.session import get_db
 from app.models.entities import Zone, LeakageAlert, NetworkComponent, Sensor
+from app.schemas.dashboard import DashboardMetricsResponse
 
 router = APIRouter(prefix="/dashboard", tags=["Command Centre Dashboard"])
 
-@router.get("/metrics", summary="Command Centre Live KPI Metrics")
-def get_dashboard_metrics(db: Session = Depends(get_db)) -> Dict[str, Any]:
+@router.get("/metrics", response_model=DashboardMetricsResponse, summary="Command Centre Live KPI Metrics")
+def get_dashboard_metrics(db: Session = Depends(get_db)) -> DashboardMetricsResponse:
     """
     Returns the 6 primary real-time KPI metrics for the Command Centre:
     1. Total Water Supply
@@ -38,17 +38,17 @@ def get_dashboard_metrics(db: Session = Depends(get_db)) -> Dict[str, Any]:
 
     shortage_risk = "MODERATE (Sector 9)" if any(z.status == "LEAK_SUSPECTED" for z in zones) else "LOW"
 
-    return {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "total_water_supply_m3h": round(total_supply, 1),
-        "current_consumption_m3h": round(total_consumption, 1),
-        "water_loss_percentage": water_loss_pct,
-        "active_leak_suspicions": active_leaks,
-        "available_reservoir_capacity_pct": avg_res_cap,
-        "predicted_shortage_risk": shortage_risk,
-        "network_health_score": 89.0,
-        "network_health_status": "GOOD / HEALTHY",
-    }
+    return DashboardMetricsResponse(
+        timestamp=datetime.now(timezone.utc).isoformat(),
+        total_water_supply_m3h=round(total_supply, 1),
+        current_consumption_m3h=round(total_consumption, 1),
+        water_loss_percentage=water_loss_pct,
+        active_leak_suspicions=active_leaks,
+        available_reservoir_capacity_pct=avg_res_cap,
+        predicted_shortage_risk=shortage_risk,
+        network_health_score=89.0,
+        network_health_status="GOOD / HEALTHY",
+    )
 
 @router.get("/charts", summary="Command Centre Time-Series Charts")
 def get_dashboard_charts(db: Session = Depends(get_db)) -> Dict[str, Any]:

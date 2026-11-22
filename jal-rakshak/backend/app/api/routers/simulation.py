@@ -1,19 +1,15 @@
 """IoT Telemetry Simulation and Scenario Router."""
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.models.entities import SimulationScenario
 from app.schemas.entities import SimulationScenarioOut
 from app.schemas.common import MessageResponse
+from app.schemas.simulation import SimulatorControlRequest, SimulationStatusResponse
 from simulation.engine import sim_engine
 
 router = APIRouter(prefix="/simulation", tags=["IoT Simulation Engine & Scenarios"])
-
-class SimulatorControlRequest(BaseModel):
-    action: str = Field(..., pattern="^(start|pause|reset)$", description="start, pause, or reset")
-    scenario: Optional[str] = None
 
 @router.get("/scenarios", response_model=List[SimulationScenarioOut], summary="List configurable simulation scenarios")
 def list_simulation_scenarios(db: Session = Depends(get_db)):

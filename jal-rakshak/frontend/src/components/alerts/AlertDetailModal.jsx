@@ -59,11 +59,17 @@ export default function AlertDetailModal({
       {/* Backdrop */}
       <div
         onClick={onClose}
+        aria-hidden="true"
         className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-3xl bg-white/95 backdrop-blur-3xl border border-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto z-10">
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="alert-modal-title"
+        className="relative w-full max-w-3xl bg-white/95 backdrop-blur-3xl border border-white rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto z-10"
+      >
         {/* Top Header */}
         <div className="flex items-start justify-between pb-4 border-b border-sky-100 gap-4">
           <div className="space-y-1">
@@ -83,7 +89,7 @@ export default function AlertDetailModal({
               <span className="text-xs font-mono text-slate-400">ID: {alert.id}</span>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
+            <h2 id="alert-modal-title" className="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
               {alert.title}
             </h2>
             <p className="text-xs text-slate-500 flex items-center gap-1.5">
@@ -99,6 +105,7 @@ export default function AlertDetailModal({
 
           <button
             onClick={onClose}
+            aria-label="Close incident details modal"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
@@ -191,10 +198,11 @@ export default function AlertDetailModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold text-slate-600 block mb-1">
+              <label htmlFor="alert-investigation-status" className="text-xs font-semibold text-slate-600 block mb-1">
                 Investigation Lifecycle
               </label>
               <select
+                id="alert-investigation-status"
                 value={investigationStatus}
                 onChange={(e) => setInvestigationStatus(e.target.value)}
                 className="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400"
@@ -209,10 +217,11 @@ export default function AlertDetailModal({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-600 block mb-1">
+              <label htmlFor="alert-physical-verification" className="text-xs font-semibold text-slate-600 block mb-1">
                 Physical Ground Verification State
               </label>
               <select
+                id="alert-physical-verification"
                 value={physicalVerification}
                 onChange={(e) => setPhysicalVerification(e.target.value)}
                 className="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400"
@@ -224,10 +233,11 @@ export default function AlertDetailModal({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-600 block mb-1">
+              <label htmlFor="alert-assigned-crew" className="text-xs font-semibold text-slate-600 block mb-1">
                 Assigned Repair Crew / Unit
               </label>
               <input
+                id="alert-assigned-crew"
                 type="text"
                 value={assignedCrew}
                 onChange={(e) => setAssignedCrew(e.target.value)}
@@ -237,10 +247,11 @@ export default function AlertDetailModal({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-600 block mb-1">
+              <label htmlFor="alert-field-note" className="text-xs font-semibold text-slate-600 block mb-1">
                 Field Inspection Note / Action Summary
               </label>
               <input
+                id="alert-field-note"
                 type="text"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}

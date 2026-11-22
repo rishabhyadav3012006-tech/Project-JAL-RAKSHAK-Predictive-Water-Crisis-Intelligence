@@ -1,8 +1,22 @@
 """Common schemas for pagination, filters, and standard responses."""
-from typing import Generic, TypeVar, List, Optional
+from typing import Generic, TypeVar, List, Optional, Any
 from pydantic import BaseModel, Field
 
 T = TypeVar("T")
+
+class DictAccessibleModel(BaseModel):
+    """Pydantic model supporting both attribute and dict-bracket notation for backward compatibility."""
+    def __getitem__(self, item: str) -> Any:
+        try:
+            return getattr(self, item)
+        except AttributeError as exc:
+            raise KeyError(item) from exc
+
+    def __contains__(self, item: str) -> bool:
+        return hasattr(self, item)
+
+    def get(self, item: str, default: Any = None) -> Any:
+        return getattr(self, item, default)
 
 class PaginationParams(BaseModel):
     skip: int = Field(default=0, ge=0, description="Number of records to skip")

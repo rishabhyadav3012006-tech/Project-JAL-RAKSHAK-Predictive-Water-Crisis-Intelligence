@@ -25,7 +25,12 @@ export default function SensorDetailModal({ sensor, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-md">
-      <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-3xl border border-white/90 shadow-glass-modal rounded-3xl p-6 overflow-hidden">
+      <div 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sensor-modal-title"
+        className="relative w-full max-w-2xl bg-white/95 backdrop-blur-3xl border border-white/90 shadow-glass-modal rounded-3xl p-6 overflow-hidden"
+      >
         {/* Top Header */}
         <div className="flex items-start justify-between pb-4 border-b border-sky-100">
           <div>
@@ -39,7 +44,7 @@ export default function SensorDetailModal({ sensor, onClose }) {
                 size="sm"
               />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">
+            <h3 id="sensor-modal-title" className="text-xl font-bold text-slate-900">
               {sensor.sensor_name}
             </h3>
             <span className="text-xs text-slate-500">
@@ -49,6 +54,7 @@ export default function SensorDetailModal({ sensor, onClose }) {
 
           <button
             onClick={onClose}
+            aria-label="Close sensor details modal"
             className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100"
           >
             <X className="w-5 h-5" />

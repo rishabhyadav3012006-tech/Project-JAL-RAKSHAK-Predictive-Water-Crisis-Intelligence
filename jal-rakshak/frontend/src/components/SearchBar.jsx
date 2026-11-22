@@ -24,6 +24,7 @@ export default function SearchBar({
         onChange={onChange}
         autoFocus={autoFocus}
         placeholder={placeholder}
+        aria-label={props['aria-label'] || placeholder}
         className="w-full pl-10 pr-16 py-2 text-sm bg-white/80 hover:bg-white focus:bg-white text-slate-900 placeholder:text-slate-400 border border-slate-200/90 rounded-xl shadow-sm backdrop-blur-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-400"
         {...props}
       />
@@ -32,6 +33,7 @@ export default function SearchBar({
           <button
             type="button"
             onClick={onClear}
+            aria-label="Clear search input"
             className="p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
           >
             <X className="w-3.5 h-3.5" />

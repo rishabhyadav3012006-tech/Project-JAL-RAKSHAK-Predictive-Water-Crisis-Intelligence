@@ -12,13 +12,13 @@ from anomaly_detection.detector import anomaly_detector
 router = APIRouter(prefix="/anomalies", tags=["AI Anomaly Detection"])
 
 class AnomalyPredictRequest(BaseModel):
-    flow_rate_m3h: float
-    pressure_bar: float
-    tank_level_pct: float = 80.0
-    historical_consumption_m3h: float = 320.0
-    zone_id: str = "ZONE_1"
-    prev_pressure: Optional[float] = None
-    prev_flow: Optional[float] = None
+    flow_rate_m3h: float = Field(..., ge=0.0, le=10000.0, description="Flow rate in m3/h")
+    pressure_bar: float = Field(..., ge=0.0, le=25.0, description="Pressure in bar")
+    tank_level_pct: float = Field(default=80.0, ge=0.0, le=100.0, description="Tank fill percentage")
+    historical_consumption_m3h: float = Field(default=320.0, ge=0.0, le=10000.0, description="Baseline expected flow")
+    zone_id: str = Field(default="ZONE_1", min_length=2, max_length=32)
+    prev_pressure: Optional[float] = Field(default=None, ge=0.0, le=25.0)
+    prev_flow: Optional[float] = Field(default=None, ge=0.0, le=10000.0)
 
 class AnomalyTriggerTestRequest(BaseModel):
     example_type: str = Field(..., description="unexpected_high_flow, sudden_pressure_deviation, unusual_overnight_consumption, rapid_tank_depletion, abnormal_flow_pressure_relationship")
