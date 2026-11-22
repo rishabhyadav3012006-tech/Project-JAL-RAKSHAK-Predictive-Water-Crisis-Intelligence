@@ -1,17 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { TelemetryProvider } from './context/TelemetryContext';
 import DashboardLayout from './layouts/DashboardLayout';
-import CommandCentreDashboard from './pages/CommandCentreDashboard';
-import DigitalTwinPage from './pages/DigitalTwinPage';
-import LiveSensorsPage from './pages/LiveSensorsPage';
-import AnomalyIntelligencePage from './pages/AnomalyIntelligencePage';
-import AlertsManagementPage from './pages/AlertsManagementPage';
-import DemandForecastingPage from './pages/DemandForecastingPage';
-import WaterAvailabilityPage from './pages/WaterAvailabilityPage';
-import SensorFusionPage from './pages/SensorFusionPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import SettingsPage from './pages/SettingsPage';
-import DesignSystemShowcase from './pages/DesignSystemShowcase';
 import { GlassCard, StatusBadge, PrimaryButton } from './components';
 import {
   Cpu,
@@ -23,6 +12,30 @@ import {
   BarChart3,
   Settings,
 } from 'lucide-react';
+
+// Code-splitting via dynamic React.lazy() for fast initial page load and modular caching
+const CommandCentreDashboard = lazy(() => import('./pages/CommandCentreDashboard'));
+const DigitalTwinPage = lazy(() => import('./pages/DigitalTwinPage'));
+const LiveSensorsPage = lazy(() => import('./pages/LiveSensorsPage'));
+const AnomalyIntelligencePage = lazy(() => import('./pages/AnomalyIntelligencePage'));
+const AlertsManagementPage = lazy(() => import('./pages/AlertsManagementPage'));
+const DemandForecastingPage = lazy(() => import('./pages/DemandForecastingPage'));
+const WaterAvailabilityPage = lazy(() => import('./pages/WaterAvailabilityPage'));
+const SensorFusionPage = lazy(() => import('./pages/SensorFusionPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const DesignSystemShowcase = lazy(() => import('./pages/DesignSystemShowcase'));
+
+function PageSkeleton() {
+  return (
+    <div className="w-full h-80 flex flex-col items-center justify-center p-8 space-y-4">
+      <div className="w-10 h-10 rounded-full border-4 border-sky-200 border-t-sky-600 animate-spin" />
+      <span className="text-xs font-semibold text-slate-500 font-mono tracking-wide">
+        Hydrating Jal-Rakshak Intelligence View...
+      </span>
+    </div>
+  );
+}
 
 export default function App() {
   const [activeNav, setActiveNav] = useState('overview');
@@ -174,7 +187,9 @@ export default function App() {
         activeView={activeView}
         onChangeView={setActiveView}
       >
-        {renderContent()}
+        <Suspense fallback={<PageSkeleton />}>
+          {renderContent()}
+        </Suspense>
       </DashboardLayout>
     </TelemetryProvider>
   );

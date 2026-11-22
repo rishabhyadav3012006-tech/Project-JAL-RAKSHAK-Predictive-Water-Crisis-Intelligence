@@ -1,7 +1,11 @@
 """Integrated Water Distribution Anomaly Detection Pipeline orchestrator."""
+import os
+import json
+from pathlib import Path
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 import numpy as np
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
@@ -9,6 +13,8 @@ from .features import extract_features, FEATURE_NAMES
 from .baseline_generator import generate_synthetic_dataset
 from .isolation_forest_model import IsolationForestDetector
 from .xgboost_model import XGBoostAnomalyClassifier
+
+MODEL_DIR = Path(__file__).resolve().parent / "models"
 
 class WaterAnomalyDetector:
     def __init__(self):
@@ -19,8 +25,73 @@ class WaterAnomalyDetector:
         self.dataset_meta: Dict[str, Any] = {}
         self.iso_eval_metrics: Dict[str, Any] = {}
 
-        # Automatically bootstrap and fit models
-        self.bootstrap()
+        # Fast loading from serialized model registry (<10ms) or automatic bootstrap
+        if not self._try_load_registry():
+            self.bootstrap()
+            self._save_registry()
+
+    def _try_load_registry(self) -> bool:
+        """Attempts to load pre-trained serialized model artifacts from registry in <10ms."""
+        try:
+            iso_path = MODEL_DIR / "iso_forest.joblib"
+            xgb_path = MODEL_DIR / "xgb_model.joblib"
+            meta_path = MODEL_DIR / "metadata.json"
+
+            if iso_path.exists() and xgb_path.exists() and meta_path.exists():
+                saved_iso = joblib.load(iso_path)
+                self.iso_forest.model = saved_iso.get("model")
+                self.iso_forest.score_min = saved_iso.get("score_min", -0.8)
+                self.iso_forest.score_max = saved_iso.get("score_max", -0.35)
+                self.iso_forest.is_fitted = True
+
+                saved_xgb = joblib.load(xgb_path)
+                self.xgb_model.model = saved_xgb.get("model")
+                self.xgb_model.evaluation_metrics = saved_xgb.get("evaluation_metrics", {})
+                self.xgb_model.is_fitted = True
+
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                    self.dataset_meta = meta.get("dataset_meta", {})
+                    self.iso_eval_metrics = meta.get("iso_eval_metrics", {})
+
+                self._seed_initial_events()
+                self.is_initialized = True
+                return True
+        except Exception:
+            pass
+        return False
+
+    def _save_registry(self):
+        """Persists trained model artifacts into registry for fast startup."""
+        try:
+            MODEL_DIR.mkdir(parents=True, exist_ok=True)
+            joblib.dump(
+                {
+                    "model": self.iso_forest.model,
+                    "score_min": self.iso_forest.score_min,
+                    "score_max": self.iso_forest.score_max,
+                },
+                MODEL_DIR / "iso_forest.joblib",
+            )
+            joblib.dump(
+                {
+                    "model": self.xgb_model.model,
+                    "evaluation_metrics": self.xgb_model.evaluation_metrics,
+                },
+                MODEL_DIR / "xgb_model.joblib",
+            )
+            with open(MODEL_DIR / "metadata.json", "w", encoding="utf-8") as f:
+                json.dump(
+                    {
+                        "dataset_meta": self.dataset_meta,
+                        "iso_eval_metrics": self.iso_eval_metrics,
+                        "saved_at": datetime.now(timezone.utc).isoformat(),
+                    },
+                    f,
+                    indent=2,
+                )
+        except Exception:
+            pass
 
     def bootstrap(self):
         """Generates synthetic baseline and trains both Isolation Forest and XGBoost."""
